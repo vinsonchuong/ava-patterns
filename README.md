@@ -30,3 +30,17 @@ test('writing files', async (t) => {
   t.pass()
 })
 ```
+
+### `wait()`
+Wait for a given number of milliseconds.
+
+```js
+import test from 'ava'
+import {wait} from 'ava-patterns'
+
+test('writing files', async (t) => {
+  // perform action and wait for results
+  await wait(500)
+  // check results
+})
+```
