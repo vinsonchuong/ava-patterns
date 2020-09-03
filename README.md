@@ -4,7 +4,7 @@
 [![dependencies Status](https://david-dm.org/vinsonchuong/ava-patterns/status.svg)](https://david-dm.org/vinsonchuong/ava-patterns)
 [![devDependencies Status](https://david-dm.org/vinsonchuong/ava-patterns/dev-status.svg)](https://david-dm.org/vinsonchuong/ava-patterns?type=dev)
 
-An awesome package
+Some useful helpers for tests in AVA.
 
 ## Usage
 Install [ava-patterns](https://www.npmjs.com/package/ava-patterns)
@@ -12,4 +12,21 @@ by running:
 
 ```sh
 yarn add ava-patterns
+```
+
+### `useTemporaryDirectory()`
+Create a temporary directory and delete it (and its contents) at the end of the
+test.
+
+```js
+import test from 'ava'
+import * as path from 'path'
+import {promises as fs} from 'fs'
+import {useTemporaryDirectory} from 'ava-patterns'
+
+test('writing files', async (t) => {
+  const directory = await useTemporaryDirectory(t)
+  await fs.writeFile(path.join(directory, 'file.txt'), 'Hello World!')
+  t.pass()
+})
 ```

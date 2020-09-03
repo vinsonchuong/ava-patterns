@@ -1,7 +1,7 @@
 {
   "name": "ava-patterns",
   "version": "0.0.0",
-  "description": "An awesome package",
+  "description": "Some useful helpers for tests in AVA",
   "keywords": [],
   "homepage": "https://github.com/vinsonchuong/ava-patterns",
   "bugs": "https://github.com/vinsonchuong/ava-patterns/issues",
@@ -13,7 +13,10 @@
     "release": "semantic-release"
   },
   "type": "module",
-  "dependencies": {},
+  "dependencies": {
+    "fs-extra": "^9.0.1",
+    "tempy": "^0.6.0"
+  },
   "devDependencies": {
     "ava": "^3.12.1",
     "semantic-release": "^17.1.1",
