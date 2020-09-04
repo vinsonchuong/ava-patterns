@@ -6,7 +6,11 @@ export default function (
   t,
   {command: [command, ...args], env = {}, cwd = process.cwd()}
 ) {
-  const child = spawn(command, args, {env, cwd, detached: true})
+  const child = spawn(command, args, {
+    env: {...process.env, ...env},
+    cwd,
+    detached: true
+  })
   t.teardown(() => {
     process.kill(-child.pid)
   })
