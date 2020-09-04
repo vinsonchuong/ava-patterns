@@ -31,6 +31,52 @@ test('writing files', async (t) => {
 })
 ```
 
+### `runProcess()`
+Spawn a process and kill it at the end of the test.
+
+The second argument supports the following options:
+
+- `command`: The command line command as an array of strings.
+- `env`: An object of environment variables.
+- `cwd`: The working directory in which to run the command
+
+Returns an object with the following members:
+
+- `output`: A string containing all of the output from stdout and stderr.
+- `outputStream`: A `Readable` stream for both stdout and stderr.
+- `waitForOutput(pattern, timeout = 1000)`: Enables waiting for a given
+  substring or regular expression to be output, for up to a given timeout.
+- `childProcess`: The underlying instance of `ChildProcess`
+
+```js
+import test from 'ava'
+import {runProcess} from 'ava-patterns'
+import got from 'got'
+
+test('running a Node server', async (t) => {
+  const script = `
+    import * as http from 'http'
+    const server = http.createServer((request, response) => {
+      response.end('Hello World!')
+    })
+    server.listen(10000, () => {
+      console.log('Listening')
+    })
+  `
+
+  const program = runProcess(t, {
+    command: ['node', '--input-type', 'module', '--eval', script]
+  })
+
+  await program.waitForOutput('Listening')
+
+  t.is(program.output, 'Listening\n')
+
+  const response = await got('http://localhost:10000')
+  t.is(response.body, 'Hello World!')
+})
+```
+
 ### `wait()`
 Wait for a given number of milliseconds.
 
