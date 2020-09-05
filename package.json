@@ -15,6 +15,7 @@
   "type": "module",
   "dependencies": {
     "fs-extra": "^9.0.1",
+    "strip-indent": "^3.0.0",
     "tempy": "^0.6.0"
   },
   "devDependencies": {

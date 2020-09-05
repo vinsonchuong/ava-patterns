@@ -18,15 +18,21 @@ yarn add ava-patterns
 Create a temporary directory and delete it (and its contents) at the end of the
 test.
 
+Returns an object with the following members:
+
+- `path`: The absolute path to the temporary directory.
+- `writeFile(filePath, fileContents)`: Write a file with path relative to the
+  temporary directory. Any leading whitespace in the file contents is stripped.
+
 ```js
 import test from 'ava'
-import * as path from 'path'
-import {promises as fs} from 'fs'
 import {useTemporaryDirectory} from 'ava-patterns'
 
 test('writing files', async (t) => {
   const directory = await useTemporaryDirectory(t)
-  await fs.writeFile(path.join(directory, 'file.txt'), 'Hello World!')
+  await directory.write('file.txt', `
+    Hello World!
+  `)
   t.pass()
 })
 ```
