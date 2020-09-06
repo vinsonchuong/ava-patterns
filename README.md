@@ -54,6 +54,9 @@ Returns an object with the following members:
   substring or regular expression to be output, for up to a given timeout.
 - `childProcess`: The underlying instance of `ChildProcess`
 
+The returned object is also a `Promise` that when the process exits, resolves
+with an object containing `output` and the exit `code`.
+
 ```js
 import test from 'ava'
 import {runProcess} from 'ava-patterns'

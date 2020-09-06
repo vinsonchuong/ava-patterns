@@ -81,3 +81,12 @@ test('setting the working directory and environment variables', async (t) => {
   await program.waitForOutput('Done!')
   t.is(program.output, '/tmp\nFOO bar\nDone!\n')
 })
+
+test('running a simple command that terminates', async (t) => {
+  const {output, code} = await runProcess(t, {
+    command: ['ls', '/']
+  })
+
+  t.true(output.includes('tmp'))
+  t.is(code, 0)
+})

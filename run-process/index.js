@@ -12,62 +12,71 @@ export default function (
     detached: true
   })
   t.teardown(() => {
-    process.kill(-child.pid)
+    try {
+      process.kill(-child.pid)
+    } catch (error) {
+      if (error.code !== 'ESRCH') {
+        throw error
+      }
+    }
   })
 
-  let output = ''
-  const outputStream = new PassThrough()
+  const program = new Promise((resolve) => {
+    child.on('close', (code) => {
+      resolve({code, output: program.output})
+    })
+  })
+  program.childProcess = child
+  program.output = ''
+  program.outputStream = new PassThrough()
+
+  program.outputStream.setEncoding('utf8')
   child.stdout.setEncoding('utf8')
   child.stderr.setEncoding('utf8')
   Promise.all([
     (async () => {
       for await (const data of child.stdout) {
-        output += data
-        outputStream.write(data)
+        program.output += data
+        program.outputStream.write(data)
       }
     })(),
     (async () => {
       for await (const data of child.stderr) {
-        output += data
-        outputStream.write(data)
+        program.output += data
+        program.outputStream.write(data)
       }
     })()
   ]).then(
     () => {
-      outputStream.end()
+      program.outputStream.end()
     },
     (error) => {
-      outputStream.emit('error', error)
+      program.outputStream.emit('error', error)
     }
   )
 
-  return {
-    childProcess: child,
-    get output() {
-      return output
-    },
-    outputStream,
-    async waitForOutput(pattern, timeout = 1000) {
-      const match =
-        typeof pattern === 'string'
-          ? (string) => string.includes(pattern)
-          : (string) => Boolean(string.match(pattern))
+  program.waitForOutput = async (pattern, timeout = 1000) => {
+    const match =
+      typeof pattern === 'string'
+        ? (string) => string.includes(pattern)
+        : (string) => Boolean(string.match(pattern))
 
-      await Promise.race([
-        (async () => {
-          await wait(timeout)
-          throw new Error('Timeout exceeded without seeing expected output.')
-        })(),
-        (async () => {
-          for await (const data of outputStream) {
-            if (match(data)) {
-              return
-            }
+    await Promise.race([
+      (async () => {
+        await wait(timeout)
+        throw new Error('Timeout exceeded without seeing expected output.')
+      })(),
+      (async () => {
+        for await (const data of program.outputStream) {
+          if (match(data)) {
+            return
           }
+        }
 
-          throw new Error('Process ended without emitting expected output.')
-        })()
-      ])
-    }
+        throw new Error('Process ended without emitting expected output.')
+      })()
+    ])
   }
+
+  return program
 }
