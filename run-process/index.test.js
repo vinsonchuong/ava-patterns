@@ -31,18 +31,16 @@ test.serial('automatically killing the process', async (t) => {
 
 test('not seeing the expected output', async (t) => {
   const script = `
-    import * as http from 'http'
-    const server = http.createServer((request, response) => {
-      response.end('Hello World!')
-    })
-    server.listen(10001)
+    console.log("Hello World!")
   `
 
   const program = runProcess(t, {
     command: ['node', '--input-type', 'module', '--eval', script]
   })
 
-  await t.throwsAsync(program.waitForOutput('Listening'))
+  await t.throwsAsync(program.waitForOutput('Listening'), {
+    message: /Hello World/
+  })
 })
 
 test('not seeing the expected output before a timeout', async (t) => {

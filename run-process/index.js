@@ -64,7 +64,9 @@ export default function (
     await Promise.race([
       (async () => {
         await wait(timeout)
-        throw new Error('Timeout exceeded without seeing expected output.')
+        throw new Error(
+          `Timeout exceeded without seeing expected output:\n${program.output}`
+        )
       })(),
       (async () => {
         for await (const data of program.outputStream) {
@@ -73,7 +75,9 @@ export default function (
           }
         }
 
-        throw new Error('Process ended without emitting expected output.')
+        throw new Error(
+          `Process ended without emitting expected output:\n${program.output}`
+        )
       })()
     ])
   }
