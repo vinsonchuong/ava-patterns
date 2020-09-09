@@ -14,10 +14,14 @@ export default async function (t) {
   return {
     path: directory,
     async writeFile(filePath, fileContents) {
-      await fs.writeFile(
-        path.join(directory, filePath),
-        stripIndent(fileContents.trim()) + '\n'
-      )
+      const absolutePath = path.join(directory, filePath)
+      const contents = stripIndent(fileContents.trim()) + '\n'
+
+      await fs.writeFile(absolutePath, contents)
+
+      if (contents.startsWith('#!')) {
+        await fs.chmod(absolutePath, 0o755)
+      }
     }
   }
 }

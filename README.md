@@ -23,6 +23,7 @@ Returns an object with the following members:
 - `path`: The absolute path to the temporary directory.
 - `writeFile(filePath, fileContents)`: Write a file with path relative to the
   temporary directory. Any leading whitespace in the file contents is stripped.
+  If the file starts with a shebang, it is given executable permissions.
 
 ```js
 import test from 'ava'
