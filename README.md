@@ -31,7 +31,7 @@ import {useTemporaryDirectory} from 'ava-patterns'
 
 test('writing files', async (t) => {
   const directory = await useTemporaryDirectory(t)
-  await directory.write('file.txt', `
+  await directory.writeFile('file.txt', `
     Hello World!
   `)
   t.pass()
