@@ -1,6 +1,4 @@
-import passingNotes from 'passing-notes'
-
-const {sendRequest} = passingNotes
+import {sendRequest} from 'passing-notes'
 
 export default async function (request) {
   if (typeof request === 'string') {

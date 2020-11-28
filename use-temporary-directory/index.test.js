@@ -1,5 +1,5 @@
 import test from 'ava'
-import * as path from 'path'
+import path from 'path'
 import {promises as fs} from 'fs'
 import {useTemporaryDirectory, runProcess} from '../index.js'
 

@@ -1,4 +1,4 @@
-import * as path from 'path'
+import path from 'path'
 import fs from 'fs-extra'
 import tempy from 'tempy'
 import stripIndent from 'strip-indent'
