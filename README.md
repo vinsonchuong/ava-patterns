@@ -116,7 +116,7 @@ import {http} from 'ava-patterns'
 test('sending HTTP requests', async (t) => {
   t.regex(await http('http://example.com'), /Example Domain/)
 
-  const response = await sendRequest({
+  const response = await http({
     method: 'POST',
     url: 'https://httpbin.org/post',
     headers: {},
