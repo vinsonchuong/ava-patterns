@@ -1,6 +1,6 @@
+import path from 'node:path'
+import {promises as fs} from 'node:fs'
 import test from 'ava'
-import path from 'path'
-import {promises as fs} from 'fs'
 import {useTemporaryDirectory, runProcess} from '../index.js'
 
 test.serial('creating a directory', async (t) => {

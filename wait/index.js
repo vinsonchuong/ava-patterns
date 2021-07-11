@@ -1,3 +1,3 @@
-import {promisify} from 'util'
+import {promisify} from 'node:util'
 
 export default promisify(setTimeout)

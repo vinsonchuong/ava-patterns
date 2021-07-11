@@ -1,5 +1,5 @@
-import {spawn} from 'child_process'
-import {PassThrough} from 'stream'
+import {spawn} from 'node:child_process'
+import {PassThrough} from 'node:stream'
 import {wait} from '../index.js'
 
 export default function (
@@ -59,7 +59,7 @@ export default function (
     const match =
       typeof pattern === 'string'
         ? (string) => string.includes(pattern)
-        : (string) => Boolean(string.match(pattern))
+        : (string) => Boolean(pattern.test(string))
 
     await Promise.race([
       (async () => {
