@@ -45,3 +45,19 @@ test('automatically setting permissions for executable files', async (t) => {
   })
   t.is(output, 'Hello World!\n')
 })
+
+test('automatically creating subdirectories', async (t) => {
+  const directory = await useTemporaryDirectory(t)
+
+  await directory.writeFile(
+    'folder/file.txt',
+    `
+    Hello World!
+  `
+  )
+
+  t.is(
+    await fs.readFile(path.join(directory.path, 'folder', 'file.txt'), 'utf8'),
+    'Hello World!\n'
+  )
+})

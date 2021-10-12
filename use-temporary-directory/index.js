@@ -17,6 +17,7 @@ export default async function (t) {
       const absolutePath = path.join(directory, filePath)
       const contents = stripIndent(fileContents.trim()) + '\n'
 
+      await fs.mkdir(path.dirname(absolutePath), {recursive: true})
       await fs.writeFile(absolutePath, contents)
 
       if (contents.startsWith('#!')) {
