@@ -23,6 +23,6 @@ export default async function (t) {
       if (contents.startsWith('#!')) {
         await fs.chmod(absolutePath, 0o755)
       }
-    }
+    },
   }
 }

@@ -10,7 +10,7 @@ test('sending an HTTP request', async (t) => {
     method: 'POST',
     url: 'https://httpbin.org/post',
     headers: {},
-    body: 'Hello World!'
+    body: 'Hello World!',
   })
   t.like(JSON.parse(response.body), {data: 'Hello World!'})
 })

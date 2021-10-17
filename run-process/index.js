@@ -1,15 +1,16 @@
+import process from 'node:process'
 import {spawn} from 'node:child_process'
 import {PassThrough} from 'node:stream'
 import {wait} from '../index.js'
 
 export default function (
   t,
-  {command: [command, ...args], env = {}, cwd = process.cwd()}
+  {command: [command, ...args], env = {}, cwd = process.cwd()},
 ) {
   const child = spawn(command, args, {
     env: {...process.env, ...env},
     cwd,
-    detached: true
+    detached: true,
   })
   t.teardown(() => {
     try {
@@ -45,14 +46,14 @@ export default function (
         program.output += data
         program.outputStream.write(data)
       }
-    })()
+    })(),
   ]).then(
     () => {
       program.outputStream.end()
     },
     (error) => {
       program.outputStream.emit('error', error)
-    }
+    },
   )
 
   program.waitForOutput = async (pattern, timeout = 1000) => {
@@ -65,7 +66,7 @@ export default function (
       (async () => {
         await wait(timeout)
         throw new Error(
-          `Timeout exceeded without seeing expected output:\n${program.output}`
+          `Timeout exceeded without seeing expected output:\n${program.output}`,
         )
       })(),
       (async () => {
@@ -76,9 +77,9 @@ export default function (
         }
 
         throw new Error(
-          `Process ended without emitting expected output:\n${program.output}`
+          `Process ended without emitting expected output:\n${program.output}`,
         )
-      })()
+      })(),
     ])
   }
 

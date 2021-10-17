@@ -5,7 +5,7 @@ export default async function (request) {
     const response = await sendRequest({
       method: 'GET',
       headers: {},
-      url: request
+      url: request,
     })
     return response.body
   }

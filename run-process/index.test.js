@@ -14,7 +14,7 @@ test.serial('starting a server', async (t) => {
   `
 
   const program = runProcess(t, {
-    command: ['node', '--input-type', 'module', '--eval', script]
+    command: ['node', '--input-type', 'module', '--eval', script],
   })
 
   await program.waitForOutput('Listening')
@@ -35,11 +35,11 @@ test('not seeing the expected output', async (t) => {
   `
 
   const program = runProcess(t, {
-    command: ['node', '--input-type', 'module', '--eval', script]
+    command: ['node', '--input-type', 'module', '--eval', script],
   })
 
   await t.throwsAsync(program.waitForOutput('Listening'), {
-    message: /Hello World/
+    message: /Hello World/,
   })
 })
 
@@ -57,7 +57,7 @@ test('not seeing the expected output before a timeout', async (t) => {
   `
 
   const program = runProcess(t, {
-    command: ['node', '--input-type', 'module', '--eval', script]
+    command: ['node', '--input-type', 'module', '--eval', script],
   })
 
   await t.throwsAsync(program.waitForOutput('Listening'))
@@ -73,7 +73,7 @@ test('setting the working directory and environment variables', async (t) => {
   const program = runProcess(t, {
     command: ['node', '--input-type', 'module', '--eval', script],
     cwd: '/tmp',
-    env: {FOO: 'bar'}
+    env: {FOO: 'bar'},
   })
 
   await program.waitForOutput('Done!')
@@ -82,7 +82,7 @@ test('setting the working directory and environment variables', async (t) => {
 
 test('running a simple command that terminates', async (t) => {
   const {output, code} = await runProcess(t, {
-    command: ['ls', '/']
+    command: ['ls', '/'],
   })
 
   t.true(output.includes('tmp'))

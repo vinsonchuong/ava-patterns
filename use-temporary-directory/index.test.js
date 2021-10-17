@@ -13,12 +13,12 @@ test.serial('creating a directory', async (t) => {
     'file.txt',
     `
     Hello World!
-  `
+  `,
   )
 
   t.is(
     await fs.readFile(path.join(directory.path, 'file.txt'), 'utf8'),
-    'Hello World!\n'
+    'Hello World!\n',
   )
 
   global.directory = directory
@@ -36,12 +36,12 @@ test('automatically setting permissions for executable files', async (t) => {
     `
       #!/usr/bin/env node
       console.log('Hello World!')
-    `
+    `,
   )
 
   const {output} = await runProcess(t, {
     command: ['./bin.js'],
-    cwd: directory.path
+    cwd: directory.path,
   })
   t.is(output, 'Hello World!\n')
 })
@@ -53,11 +53,11 @@ test('automatically creating subdirectories', async (t) => {
     'folder/file.txt',
     `
     Hello World!
-  `
+  `,
   )
 
   t.is(
     await fs.readFile(path.join(directory.path, 'folder', 'file.txt'), 'utf8'),
-    'Hello World!\n'
+    'Hello World!\n',
   )
 })
