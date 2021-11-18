@@ -81,10 +81,9 @@ test('setting the working directory and environment variables', async (t) => {
 })
 
 test('running a simple command that terminates', async (t) => {
-  const {output, code} = await runProcess(t, {
-    command: ['ls', '/'],
-  })
+  const program = runProcess(t, {command: ['ls', '/']})
+  const code = await program.waitUntilExit()
 
-  t.true(output.includes('tmp'))
+  t.true(program.output.includes('tmp'))
   t.is(code, 0)
 })

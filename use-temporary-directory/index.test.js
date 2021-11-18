@@ -1,7 +1,11 @@
 import path from 'node:path'
 import {promises as fs} from 'node:fs'
+import {promisify} from 'node:util'
+import childProcess from 'node:child_process'
 import test from 'ava'
-import {useTemporaryDirectory, runProcess} from '../index.js'
+import {useTemporaryDirectory} from '../index.js'
+
+const exec = promisify(childProcess.exec)
 
 test.serial('creating a directory', async (t) => {
   const directory = await useTemporaryDirectory(t)
@@ -39,10 +43,7 @@ test('automatically setting permissions for executable files', async (t) => {
     `,
   )
 
-  const {output} = await runProcess(t, {
-    command: ['./bin.js'],
-    cwd: directory.path,
-  })
+  const {stdout: output} = await exec('./bin.js', {cwd: directory.path})
   t.is(output, 'Hello World!\n')
 })
 

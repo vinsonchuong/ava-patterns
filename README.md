@@ -53,10 +53,8 @@ Returns an object with the following members:
 - `outputStream`: A `Readable` stream for both stdout and stderr.
 - `waitForOutput(pattern, timeout = 1000)`: Enables waiting for a given
   substring or regular expression to be output, for up to a given timeout.
+- `waitUntilExit()`: Returns a promise that will resolve with the exit code.
 - `childProcess`: The underlying instance of `ChildProcess`
-
-The returned object is also a `Promise` that when the process exits, resolves
-with an object containing `output` and the exit `code`.
 
 ```js
 import test from 'ava'
@@ -102,13 +100,11 @@ test('writing files', async (t) => {
 ```
 
 ### `http()`
-Concisely send HTTP requests.
+Make an HTTP request.
 
-If given a URL string, sends a GET request and returns the response body.
-
-Otherwise, takes in an object with properties `method`, `url`, `headers`, and an
-optional `body` and returns an object with properties `status`, `headers`, and
-`body`.
+It takes in an object with properties `method`, `url`, optional `headers`, and
+an optional `body` and returns an object with properties `status`, `headers`,
+and `body`.
 
 ```js
 import {http} from 'ava-patterns'
@@ -119,7 +115,6 @@ test('sending HTTP requests', async (t) => {
   const response = await http({
     method: 'POST',
     url: 'https://httpbin.org/post',
-    headers: {},
     body: 'Hello World!'
   })
   t.like(JSON.parse(response.body), {data: 'Hello World!'})
