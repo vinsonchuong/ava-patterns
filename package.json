@@ -11,7 +11,7 @@
   "main": "index.js",
   "scripts": {
     "test": "xo && tsc --noEmit && ava",
-    "prepublishOnly": "tsc --emitDeclarationOnly --outFile index.d.ts",
+    "prepublishOnly": "tsc --emitDeclarationOnly",
     "release": "semantic-release"
   },
   "type": "module",

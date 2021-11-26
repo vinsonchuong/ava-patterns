@@ -1,5 +1,7 @@
 **/*.test.js
+**/*.test.d.ts
 **/test.js
+**/test.d.ts
 test/
 
 .yarn/
