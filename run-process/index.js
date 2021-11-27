@@ -17,7 +17,7 @@ import {wait} from '../index.js'
  *   childProcess: import('node:child_process').ChildProcess
  *   output: string,
  *   outputStream: import('stream').Readable,
- *   waitForOutput(output: string | RegExp): Promise<void>,
+ *   waitForOutput(output: string | RegExp, timeout?: number): Promise<void>,
  *   waitUntilExit(): Promise<number>
  * }}
  */
