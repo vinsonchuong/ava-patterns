@@ -11,17 +11,26 @@ import stripIndent from 'strip-indent'
  */
 
 /**
+ * @typedef {Object} Options
+ * @property {string} [prefix] - A directory in which to create the temporary
+ *   directory
+ */
+
+/**
  * Create a temporary directory and delete it at the end of the test.
  *
  * @param {import('ava').ExecutionContext<any>} t
+ * @param {Options} [options]
  *
  * @return {Promise<{
  *   path: string,
  *   writeFile(filePath: string, fileContents: string): Promise<void>
  * }>} an object allowing manipulation of files within the directory.
  */
-export default async function (t) {
-  const directory = tempy.directory()
+export default async function (t, options) {
+  const directory = options?.prefix
+    ? path.join(options.prefix, path.basename(tempy.directory()))
+    : tempy.directory()
 
   await fs.ensureDir(directory)
   t.teardown(async () => {

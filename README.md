@@ -18,6 +18,11 @@ yarn add ava-patterns
 Create a temporary directory and delete it (and its contents) at the end of the
 test.
 
+Takes the following options (all of which are optional):
+
+- `prefix`: The directory in which to create the temporary directory. Defaults
+  to a suitable location based on the host system (e.g. `/tmp`).
+
 Returns an object with the following members:
 
 - `path`: The absolute path to the temporary directory.
@@ -26,11 +31,20 @@ Returns an object with the following members:
   If the file starts with a shebang, it is given executable permissions.
 
 ```js
+import process from 'node:process'
 import test from 'ava'
 import {useTemporaryDirectory} from 'ava-patterns'
 
-test('writing files', async (t) => {
+test('writing files to a temporary directory', async (t) => {
   const directory = await useTemporaryDirectory(t)
+  await directory.writeFile('file.txt', `
+    Hello World!
+  `)
+  t.pass()
+})
+
+test('creating temporary directories in a specified location', async (t) => {
+  const directory = await useTemporaryDirectory(t, { prefix: process.cwd() })
   await directory.writeFile('file.txt', `
     Hello World!
   `)

@@ -1,4 +1,5 @@
 import path from 'node:path'
+import process from 'node:process'
 import {promises as fs} from 'node:fs'
 import {promisify} from 'node:util'
 import childProcess from 'node:child_process'
@@ -59,6 +60,20 @@ test('automatically creating subdirectories', async (t) => {
 
   t.is(
     await fs.readFile(path.join(directory.path, 'folder', 'file.txt'), 'utf8'),
+    'Hello World!\n',
+  )
+})
+
+test('configuring where to create a directory', async (t) => {
+  const directory = await useTemporaryDirectory(t, {prefix: process.cwd()})
+  t.is(path.dirname(directory.path), process.cwd())
+
+  await directory.writeFile('file.txt', 'Hello World!')
+  t.is(
+    await fs.readFile(
+      path.join(process.cwd(), path.basename(directory.path), 'file.txt'),
+      'utf8',
+    ),
     'Hello World!\n',
   )
 })
