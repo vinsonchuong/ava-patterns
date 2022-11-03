@@ -14,11 +14,14 @@ test.serial('creating a directory', async (t) => {
   const stats = await fs.stat(directory.path)
   t.true(stats.isDirectory())
 
-  await directory.writeFile(
-    'file.txt',
-    `
-    Hello World!
-  `,
+  t.is(
+    await directory.writeFile(
+      'file.txt',
+      `
+      Hello World!
+    `,
+    ),
+    path.join(directory.path, 'file.txt'),
   )
 
   t.is(

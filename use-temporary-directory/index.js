@@ -24,7 +24,7 @@ import stripIndent from 'strip-indent'
  *
  * @return {Promise<{
  *   path: string,
- *   writeFile(filePath: string, fileContents: string): Promise<void>
+ *   writeFile(filePath: string, fileContents: string): Promise<string>
  * }>} an object allowing manipulation of files within the directory.
  */
 export default async function (t, options) {
@@ -49,6 +49,8 @@ export default async function (t, options) {
       if (contents.startsWith('#!')) {
         await fs.chmod(absolutePath, 0o755)
       }
+
+      return absolutePath
     },
   }
 }
