@@ -1,6 +1,6 @@
 import path from 'node:path'
 import fs from 'fs-extra'
-import tempy from 'tempy'
+import {temporaryFile} from 'tempy'
 import stripIndent from 'strip-indent'
 
 /**
@@ -29,8 +29,8 @@ import stripIndent from 'strip-indent'
  */
 export default async function (t, options) {
   const directory = options?.prefix
-    ? path.join(options.prefix, path.basename(tempy.directory()))
-    : tempy.directory()
+    ? path.join(options.prefix, path.basename(temporaryFile()))
+    : temporaryFile()
 
   await fs.ensureDir(directory)
   t.teardown(async () => {
