@@ -1,6 +1,7 @@
 import process from 'node:process'
 import {spawn} from 'node:child_process'
-import {PassThrough} from 'node:stream'
+import {EventEmitter} from 'node:events'
+import {pEventIterator} from 'p-event'
 import {wait} from '../index.js'
 
 /**
@@ -16,7 +17,7 @@ import {wait} from '../index.js'
  * @return {{
  *   childProcess: import('node:child_process').ChildProcess
  *   output: string,
- *   outputStream: import('stream').Readable,
+ *   events: import('node:events').EventEmitter,
  *   waitForOutput(output: string | RegExp, timeout?: number): Promise<void>,
  *   waitUntilExit(): Promise<number>
  * }}
@@ -40,46 +41,44 @@ export default function (
     }
   })
 
+  const events = new EventEmitter()
+
   const exitCode = new Promise((resolve) => {
     child.on('close', (code) => {
+      events.emit('exit', code)
       resolve(code)
     })
   })
 
   let output = ''
 
-  const outputStream = new PassThrough()
-  outputStream.setEncoding('utf8')
   child.stdout.setEncoding('utf8')
   child.stderr.setEncoding('utf8')
   Promise.all([
     (async () => {
       for await (const data of child.stdout) {
         output += data
-        outputStream.write(data)
+        events.emit('stdout', data)
+        events.emit('output', data)
       }
     })(),
     (async () => {
       for await (const data of child.stderr) {
         output += data
-        outputStream.write(data)
+        events.emit('stderr', data)
+        events.emit('output', data)
       }
     })(),
-  ]).then(
-    () => {
-      outputStream.end()
-    },
-    (error) => {
-      outputStream.emit('error', error)
-    },
-  )
+  ]).catch((error) => {
+    events.emit('error', error)
+  })
 
   return {
     childProcess: child,
     get output() {
       return output
     },
-    outputStream,
+    events,
     async waitForOutput(pattern, timeout = 1000) {
       await Promise.race([
         (async () => {
@@ -89,11 +88,14 @@ export default function (
           )
         })(),
         (async () => {
-          for await (const data of outputStream) {
+          for await (const output of pEventIterator(events, 'output', {
+            resolutionEvents: ['exit'],
+            rejectionEvents: ['error'],
+          })) {
             if (
               typeof pattern === 'string'
-                ? data.includes(pattern)
-                : pattern.test(data)
+                ? output.includes(pattern)
+                : pattern.test(output)
             ) {
               return
             }

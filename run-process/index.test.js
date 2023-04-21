@@ -87,3 +87,47 @@ test('running a simple command that terminates', async (t) => {
   t.true(program.output.includes('tmp'))
   t.is(code, 0)
 })
+
+test('emitting the right events', async (t) => {
+  const script = `
+    import {setTimeout} from 'node:timers/promises'
+    console.log('One!')
+    await setTimeout(100)
+    console.log('Two!')
+    await setTimeout(100)
+    console.error('Error!')
+    await setTimeout(100)
+    console.log('Three!')
+  `
+
+  const program = runProcess(t, {
+    command: ['node', '--input-type', 'module', '--eval', script],
+  })
+
+  const stdout = []
+  program.events.on('stdout', (message) => {
+    stdout.push(message)
+  })
+
+  const stderr = []
+  program.events.on('stderr', (message) => {
+    stderr.push(message)
+  })
+
+  const output = []
+  program.events.on('output', (message) => {
+    output.push(message)
+  })
+
+  const exit = []
+  program.events.on('exit', (code) => {
+    exit.push(code)
+  })
+
+  await program.waitUntilExit()
+
+  t.deepEqual(stdout, ['One!\n', 'Two!\n', 'Three!\n'])
+  t.deepEqual(stderr, ['Error!\n'])
+  t.deepEqual(output, ['One!\n', 'Two!\n', 'Error!\n', 'Three!\n'])
+  t.deepEqual(exit, [0])
+})

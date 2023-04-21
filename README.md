@@ -65,7 +65,11 @@ The second argument supports the following options:
 Returns an object with the following members:
 
 - `output`: A string containing all of the output from stdout and stderr.
-- `outputStream`: A `Readable` stream for both stdout and stderr.
+- `events`: An `EventEmitter` that emits the following events:
+  - `stdout`: Any output written to standard output
+  - `stderr`: Any output written to standard error
+  - `output`: Any output written to either standard output or error
+  - `exit`: The exit code after the process ends
 - `waitForOutput(pattern, timeout = 1000)`: Enables waiting for a given
   substring or regular expression to be output, for up to a given timeout.
 - `waitUntilExit()`: Returns a promise that will resolve with the exit code.
